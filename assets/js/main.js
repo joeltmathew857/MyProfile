@@ -248,46 +248,68 @@
 
 $("#submit-form").submit((e) => {
   e.preventDefault();
-
-  // Perform client-side form validation
-  const isValid = validateForm();
-
-  if (!isValid) {
+  const response = validateForm();
+  if (response === false) {
     return;
   }
-
-  // Use a variable to store the form data
-  const formData = $("#submit-form").serialize();
-
-  // Make the AJAX request
   $.ajax({
     url: "https://script.google.com/macros/s/AKfycbyF0C1nE53WF6fAMjXN495kV6RnbgvvEZH3gXL_GhzayVdflL9AFetZsP1HCAphgvX8/exec",
-    data: formData,
+    data: $("#submit-form").serialize(),
     method: "post",
-    dataType: "json", // Expect JSON response
     success: function (response) {
-      if (response.result === "success") {
-        $(".loading").hide();
-        $(".sent-message").show();
-      } else {
-        $(".loading").hide();
-        $(".error-message")
-          .html("Failed to submit the form. Please try again.")
-          .show();
-      }
+      alert("Form submitted successfully");
+      window.location.reload();
+      //window.location.href="https://google.com"
     },
     error: function (err) {
-      $(".loading").hide();
-      $(".error-message")
-        .html("An error occurred while submitting the form. Please try again.")
-        .show();
-    },
-    beforeSend: function () {
-      $(".loading").show();
+      alert("Something Error");
     },
   });
 });
 
 function validateForm() {
+  var fname = document.getElementById("name").value;
+  var email = document.getElementById("email").value;
+  var subject = document.getElementById("subject").value;
+  var message = document.getElementById("message").value;
+
+  if (fname === "") {
+    alert("Must have a username");
+    document.getElementById("name").focus();
+    return false;
+  }
+
+  if (email === "") {
+    alert("Must have a EmailAddress");
+    document.getElementById("email").focus();
+    return false;
+  }
+
+  if (subject === "") {
+    alert("Must have a Subject");
+    document.getElementById("subject").focus();
+    return false;
+  }
+  if (message === "") {
+    alert("Must have a Message");
+    document.getElementById("message").focus();
+    return false;
+  }
+
+  // Validate name: Only letters allowed
+  if (!/^[a-zA-Z]+$/.test(fname)) {
+    alert("Invalid name. It should contain only letters.");
+    document.getElementById("name").focus();
+    return false;
+  }
+
+  // Validate email format
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Invalid email address. Please provide a valid email.");
+    document.getElementById("email").focus();
+    return false;
+  }
+
   return true;
 }
